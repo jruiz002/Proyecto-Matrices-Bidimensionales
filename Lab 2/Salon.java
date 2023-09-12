@@ -263,48 +263,66 @@ public class Salon {
             System.out.println("Ingrese el curso que desea asignar a un horario en específico: ");
             mostrarCursos();
             int indiceCurso = sc.nextInt();
-            Curso curso = cursos.get(indiceCurso);
             
-            System.out.println("Ingrese día en el que desea asignar el curso: ");
-            mostrasDias();
-            int indiceDia = sc.nextInt();
-            
-            System.out.println("Seleccione una hora para asignarle al curso: ");
-            int indiceHora = 0;
-            
-            for (Integer elementoLista : horasDisponibles(indiceDia)) {
-                System.out.println(elementoLista + ". " + horarios[elementoLista]);
+            // Se valida que se ingrese un indice valido de un curso.
+            ArrayList<Integer> indicesCursos = new ArrayList<Integer>();
+            int sizeCursos = getCursos().size();
+            for (int i = 0; i < sizeCursos; i++){
+                indicesCursos.add(i);
             }
-
-            indiceHora = sc.nextInt();
-
-            // Se valida que se ingresen unicamente los indices indicados en consola
-            if (horasDisponibles(indiceDia).contains(indiceHora)) {
-                Asignacion asignacion = new Asignacion(0, curso);
-                
-                Horario horario = new Horario(indiceDia, indiceHora);
-                
-                curso.agregarHorario(horario);
+            
+            if (indicesCursos.contains(indiceCurso)){
+                Curso curso = cursos.get(indiceCurso);
+                System.out.println("Ingrese día en el que desea asignar el curso: ");
+                mostrasDias();
+                int indiceDia = sc.nextInt();
     
-                matrizHorario[indiceDia][indiceHora] = asignacion;
-    
-                for (int i = 0; i < 5; i++) {
-                    for (int j = 0; j < 14; j++) {
-                        if (matrizHorario[i][j] == null){
-                            System.out.print("Vacío" + "\t"); // Utiliza tabulaciones como separadores
-                        }else{
-                            System.out.print(matrizHorario[i][j].getCurso().getNombre() + "\t"); // Utiliza tabulaciones como separadores
-                        }
+                if (indiceDia >= 0 && indiceDia <= 4) {
+                    System.out.println("Seleccione una hora para asignarle al curso: ");
+                    int indiceHora = 0;
+                    
+                    for (Integer elementoLista : horasDisponibles(indiceDia)) {
+                        System.out.println(elementoLista + ". " + horarios[elementoLista]);
                     }
-                    System.out.println(); // Cambia de línea después de cada fila
-                }
+        
+                    indiceHora = sc.nextInt();
+        
+                    // Se valida que se ingresen unicamente los indices indicados en consola
+                    if (horasDisponibles(indiceDia).contains(indiceHora)) {
+                        Asignacion asignacion = new Asignacion(0, curso);
+                        
+                        Horario horario = new Horario(indiceDia, indiceHora);
+                        
+                        curso.agregarHorario(horario);
+            
+                        matrizHorario[indiceDia][indiceHora] = asignacion;
+            
+                        for (int i = 0; i < 5; i++) {
+                            for (int j = 0; j < 14; j++) {
+                                if (matrizHorario[i][j] == null){
+                                    System.out.print("Vacío" + "\t"); // Utiliza tabulaciones como separadores
+                                }else{
+                                    System.out.print(matrizHorario[i][j].getCurso().getNombre() + "\t"); // Utiliza tabulaciones como separadores
+                                }
+                            }
+                            System.out.println(); // Cambia de línea después de cada fila
+                        }
+            
+                        System.out.println("¡Asignación realizada exitosamente!");           
+        
+                    }else{
+                        System.out.println("Indice inválido.");
+                    }
     
-                System.out.println("¡Asignación realizada exitosamente!");           
+                }else{
+                    System.out.println("Indice inválido.");
+                }
 
             }else{
                 System.out.println("Indice inválido.");
             }
-
+            
+        
         } catch (InputMismatchException e) {
             System.out.println("Entrada inválida, debe ingresar un número entero.");
             sc.nextLine();
@@ -326,25 +344,37 @@ public class Salon {
             System.out.println("Ingrese el día: ");
             mostrasDias();
             int indiceDia = sc.nextInt();
-    
-            System.out.println("Ingrese el horario: ");
-            for (int i = 0; i < horarios.length; i++){
-                System.out.println(i + ". " + horarios[i]);
-            }
-            int indiceHorario = sc.nextInt();
-    
-            if (matrizHorario[indiceDia][indiceHorario] == null){
-                System.out.println("¡Actualmente, este horario se encuentra disponible, por lo que no hay información de algún curso!");
+
+            if (indiceDia >= 0 && indiceDia <= 4) {
+                System.out.println("Ingrese el horario: ");
+                for (int i = 0; i < horarios.length; i++){
+                    System.out.println(i + ". " + horarios[i]);
+                }
+                int indiceHorario = sc.nextInt();
+
+                if (indiceHorario >= 0 && indiceHorario <= 13){
+                    if (matrizHorario[indiceDia][indiceHorario] == null){
+                        System.out.println("¡Actualmente, este horario se encuentra disponible, por lo que no hay información de algún curso!");
+                    }else{
+                        System.out.println();
+                        System.out.println("---------------- INFORMACIÓN CURSO ----------------");
+                        System.out.println("Curso impartido: " + matrizHorario[indiceDia][indiceHorario].getCurso().getNombre());
+                        System.out.println("Profesor encargado: " + matrizHorario[indiceDia][indiceHorario].getCurso().getProfesor().getNombre());
+                        System.out.println("Contacto profesor: " + matrizHorario[indiceDia][indiceHorario].getCurso().getProfesor().getTelefono());
+                        System.out.println("Horario en el que se imparte el curso: ");
+                        System.out.println("Día: " + diasSemana[indiceDia]);
+                        System.out.println("Horario: " + horarios[indiceHorario]);
+                    }
+
+                }else{
+                    System.out.println("Indice inválido.");
+                }
+        
+
             }else{
-                System.out.println();
-                System.out.println("---------------- INFORMACIÓN CURSO ----------------");
-                System.out.println("Curso impartido: " + matrizHorario[indiceDia][indiceHorario].getCurso().getNombre());
-                System.out.println("Profesor encargado: " + matrizHorario[indiceDia][indiceHorario].getCurso().getProfesor().getNombre());
-                System.out.println("Contacto profesor: " + matrizHorario[indiceDia][indiceHorario].getCurso().getProfesor().getTelefono());
-                System.out.println("Horario en el que se imparte el curso: ");
-                System.out.println("Día: " + diasSemana[indiceDia]);
-                System.out.println("Horario: " + horarios[indiceHorario]);
+                System.out.println("Indice inválido.");
             }
+    
         }catch (InputMismatchException e) {
             System.out.println("Entrada inválida, debe ingresar un número entero.");
             sc.nextLine();
@@ -367,25 +397,46 @@ public class Salon {
             System.out.println("Ingrese el curso: ");
             mostrarCursos();
             int indiceCurso = sc.nextInt();
-    
-            System.out.println("Ingrese el horario a eliminar: ");
-            ArrayList<Horario> listaHorarios = cursos.get(indiceCurso).getListaHorarios();
-            for (int i = 0; i <  listaHorarios.size(); i++) {
-                System.out.println(i + ". " + "Día: " + diasSemana[listaHorarios.get(i).getDia()] + "; " + "Hora: " + horarios[listaHorarios.get(i).getHora()]);
-            }
-            int indiceHorario = sc.nextInt();
-    
-            // Se utilizan los indices del dia y la hora para obtener la asignación a eliminar
-            Curso curso = cursos.get(indiceCurso);
-            Horario horarioSeleccionado = curso.getListaHorarios().get(indiceHorario);
-    
-            // Se elimina el curso de la matriz de horarios
-            matrizHorario[horarioSeleccionado.getDia()][horarioSeleccionado.getHora()] = null;
+
+            // Se valida que se ingrese un indice valido de un curso.
+            ArrayList<Integer> indicesCursos = new ArrayList<Integer>();
+            int sizeCursos = getCursos().size();
+            for (int i = 0; i < sizeCursos; i++){
+                indicesCursos.add(i);
+            }   
             
-            // Se elimina el horario de la lista de horarios
-            curso.getListaHorarios().remove(indiceHorario);
+            if (indicesCursos.contains(indiceCurso)){
+                System.out.println("Ingrese el horario a eliminar: ");
+                ArrayList<Horario> listaHorarios = cursos.get(indiceCurso).getListaHorarios();
+                ArrayList<Integer> indicesHorarios = new ArrayList<Integer>();
+                for (int i = 0; i <  listaHorarios.size(); i++) {
+                    indicesHorarios.add(i);
+                    System.out.println(i + ". " + "Día: " + diasSemana[listaHorarios.get(i).getDia()] + "; " + "Hora: " + horarios[listaHorarios.get(i).getHora()]);
+                }
+                int indiceHorario = sc.nextInt();
     
-            System.out.println("¡Se eliminó correctamente el horario del curso seleccionado!");
+                if (indicesHorarios.contains(indiceHorario)){
+                    // Se utilizan los indices del dia y la hora para obtener la asignación a eliminar
+                    Curso curso = cursos.get(indiceCurso);
+                    Horario horarioSeleccionado = curso.getListaHorarios().get(indiceHorario);
+            
+                    // Se elimina el curso de la matriz de horarios
+                    matrizHorario[horarioSeleccionado.getDia()][horarioSeleccionado.getHora()] = null;
+                    
+                    // Se elimina el horario de la lista de horarios
+                    curso.getListaHorarios().remove(indiceHorario);
+            
+                    System.out.println("¡Se eliminó correctamente el horario del curso seleccionado!");
+    
+                }else{
+                    System.out.println("Indice inválido.");
+                }
+
+            }else{
+                System.out.println("Indice inválido.");
+            }
+    
+    
 
         } catch (InputMismatchException e) {
             System.out.println("Entrada inválida, debe ingresar un número entero.");
@@ -409,34 +460,55 @@ public class Salon {
             System.out.println("Ingrese el curso: ");
             mostrarCursos();
             int indiceCurso = sc.nextInt();
+
+            // Se valida que se ingrese un indice valido de un curso.
+            ArrayList<Integer> indicesCursos = new ArrayList<Integer>();
+            int sizeCursos = getCursos().size();
+            for (int i = 0; i < sizeCursos; i++){
+                indicesCursos.add(i);
+            } 
+
+            if (indicesCursos.contains(indiceCurso)){
+                System.out.println("Ingrese el horario a asignar: ");
+                ArrayList<Horario> listaHorarios = cursos.get(indiceCurso).getListaHorarios();
+                ArrayList<Integer> listaIndicesHorarios = new ArrayList<Integer>();
+                for (int i = 0; i <  listaHorarios.size(); i++) {
+                    listaIndicesHorarios.add(i);
+                    System.out.println(i + ". " + "Día: " + diasSemana[listaHorarios.get(i).getDia()] + "; " + "Hora: " + horarios[listaHorarios.get(i).getHora()]);
+                }
+                int indiceHorario = sc.nextInt();
     
-            System.out.println("Ingrese el horario a asignar: ");
-            ArrayList<Horario> listaHorarios = cursos.get(indiceCurso).getListaHorarios();
-            for (int i = 0; i <  listaHorarios.size(); i++) {
-                System.out.println(i + ". " + "Día: " + diasSemana[listaHorarios.get(i).getDia()] + "; " + "Hora: " + horarios[listaHorarios.get(i).getHora()]);
-            }
-            int indiceHorario = sc.nextInt();
-    
-            Curso curso = cursos.get(indiceCurso);
-            Horario horarioSeleccionado = curso.getListaHorarios().get(indiceHorario);
-    
-            // Aqui se almacena la asignación seleccionada
-            Asignacion asignacion = matrizHorario[horarioSeleccionado.getDia()][horarioSeleccionado.getHora()];
-    
-            if (asignacion.getCuposDisponibles() >= (curso.getEstudiantesAsignados() * 2)){
-                System.out.println("- Por cuestiones de acreditación no se permiten más de 2 estudiantes por computadora por lo que no se puede asignar el curso en ningún horario del lab. ");
-            }else{
-                if (asignacion.getCuposDisponibles() >= curso.getEstudiantesAsignados()) {
-                    asignacion.setCuposDisponibles(asignacion.getCuposDisponibles() + 1);
-                    System.out.println("¡La cantidad de estudiantes inscritos es mayor que la del laboratorio, por lo que algún estudiante compartira computadora!");
-                    System.out.println("- Número de personas asignadas en el horario seleccionado: " + asignacion.getCuposDisponibles());
+                if (listaIndicesHorarios.contains(indiceHorario)){
+                    Curso curso = cursos.get(indiceCurso);
+                    Horario horarioSeleccionado = curso.getListaHorarios().get(indiceHorario);
+            
+                    // Aqui se almacena la asignación seleccionada
+                    Asignacion asignacion = matrizHorario[horarioSeleccionado.getDia()][horarioSeleccionado.getHora()];
+            
+                    if (asignacion.getCuposDisponibles() >= (curso.getEstudiantesAsignados() * 2)){
+                        System.out.println("- Por cuestiones de acreditación no se permiten más de 2 estudiantes por computadora por lo que no se puede asignar el curso en ningún horario del lab. ");
+                    }else{
+                        if (asignacion.getCuposDisponibles() >= curso.getEstudiantesAsignados()) {
+                            asignacion.setCuposDisponibles(asignacion.getCuposDisponibles() + 1);
+                            System.out.println("¡La cantidad de estudiantes inscritos es mayor que la del laboratorio, por lo que algún estudiante compartira computadora!");
+                            System.out.println("- Número de personas asignadas en el horario seleccionado: " + asignacion.getCuposDisponibles());
+            
+                        }else{
+                            asignacion.setCuposDisponibles(asignacion.getCuposDisponibles() + 1);
+                            System.out.println("- Número de personas asignadas en el horario seleccionado: " + asignacion.getCuposDisponibles());
+            
+                        }
+                    }
     
                 }else{
-                    asignacion.setCuposDisponibles(asignacion.getCuposDisponibles() + 1);
-                    System.out.println("- Número de personas asignadas en el horario seleccionado: " + asignacion.getCuposDisponibles());
-    
+                    System.out.println("Indice inválido.");
                 }
+
+            }else{
+                System.out.println("Indice inválido.");
             }
+    
+    
             
         } catch (InputMismatchException e) {
             System.out.println("Entrada inválida, debe ingresar un número entero.");
@@ -462,68 +534,85 @@ public class Salon {
             System.out.println("Ingrese el curso: ");
             mostrarCursos();
             int indiceCurso = sc.nextInt();
-    
-            System.out.println("Ingrese el horario a actualizar: ");
-            ArrayList<Integer> indicesHorarios = new ArrayList<Integer>();
-            ArrayList<Horario> listaHorarios = cursos.get(indiceCurso).getListaHorarios();
-            for (int i = 0; i <  listaHorarios.size(); i++) {
-                indicesHorarios.add(i);
-                System.out.println(i + ". " + "Día: " + diasSemana[listaHorarios.get(i).getDia()] + "; " + "Hora: " + horarios[listaHorarios.get(i).getHora()]);
-            }
-            int indiceHorario = sc.nextInt();
 
-            if (indicesHorarios.contains(indiceHorario)){
-                Curso curso = cursos.get(indiceCurso);
-                Horario horarioSeleccionado = curso.getListaHorarios().get(indiceHorario);
-        
-                // Seleccionar el nuevo horario
-                System.out.println("Ingrese día en el que desea asignar el curso: ");
-                mostrasDias();
-                int indiceDia = sc.nextInt();
-                
-                System.out.println("Seleccione una hora para asignarle al curso: ");
-                int indiceHora = 0;
-                
-                for (Integer elementoLista : horasDisponibles(indiceDia)) {
-                    System.out.println(elementoLista + ". " + horarios[elementoLista]);
+            // Se valida que se ingrese un indice valido de un curso.
+            ArrayList<Integer> indicesCursos = new ArrayList<Integer>();
+            int sizeCursos = getCursos().size();
+            for (int i = 0; i < sizeCursos; i++){
+                indicesCursos.add(i);
+            } 
+
+            if (indicesCursos.contains(indiceCurso)){
+                System.out.println("Ingrese el horario a actualizar: ");
+                ArrayList<Integer> indicesHorarios = new ArrayList<Integer>();
+                ArrayList<Horario> listaHorarios = cursos.get(indiceCurso).getListaHorarios();
+                for (int i = 0; i <  listaHorarios.size(); i++) {
+                    indicesHorarios.add(i);
+                    System.out.println(i + ". " + "Día: " + diasSemana[listaHorarios.get(i).getDia()] + "; " + "Hora: " + horarios[listaHorarios.get(i).getHora()]);
                 }
+                int indiceHorario = sc.nextInt();
     
-                indiceHora = sc.nextInt();
-    
-                // Se valida que se ingresen unicamente los indices indicados en consola
-                if (horasDisponibles(indiceDia).contains(indiceHora)) {
-                    // Se elimina el curso de la matriz de horarios
-                    matrizHorario[horarioSeleccionado.getDia()][horarioSeleccionado.getHora()] = null;
-                    
-                    // Se elimina el horario de la lista de horarios
-                    curso.getListaHorarios().remove(indiceHorario);
+                if (indicesHorarios.contains(indiceHorario)){
+                    Curso curso = cursos.get(indiceCurso);
+                    Horario horarioSeleccionado = curso.getListaHorarios().get(indiceHorario);
             
-                    //Creación de instancias de tipo Asignación y Horario
-                    Asignacion asignacion = new Asignacion(0, curso);
+                    // Seleccionar el nuevo horario
+                    System.out.println("Ingrese día en el que desea asignar el curso: ");
+                    mostrasDias();
+                    int indiceDia = sc.nextInt();
                     
-                    Horario horario = new Horario(indiceDia, indiceHora);
-                    
-                    curso.agregarHorario(horario);
-            
-                    matrizHorario[indiceDia][indiceHora] = asignacion;
-            
-                    for (int i = 0; i < 5; i++) {
-                        for (int j = 0; j < 14; j++) {
-                            if (matrizHorario[i][j] == null){
-                                System.out.print("Vacío" + "\t"); // Utiliza tabulaciones como separadores
-                            }else{
-                                System.out.print(matrizHorario[i][j].getCurso().getNombre() + "\t"); // Utiliza tabulaciones como separadores
-                            }
+                    if (indiceDia >= 0 && indiceDia <= 4){
+                        System.out.println("Seleccione una hora para asignarle al curso: ");
+                        int indiceHora = 0;
+                        
+                        for (Integer elementoLista : horasDisponibles(indiceDia)) {
+                            System.out.println(elementoLista + ". " + horarios[elementoLista]);
                         }
-                        System.out.println(); // Cambia de línea después de cada fila
-                    }
             
-                    System.out.println("¡Actualización realizada exitosamente!");     
+                        indiceHora = sc.nextInt();
+            
+                        // Se valida que se ingresen unicamente los indices indicados en consola
+                        if (horasDisponibles(indiceDia).contains(indiceHora)) {
+                            // Se elimina el curso de la matriz de horarios
+                            matrizHorario[horarioSeleccionado.getDia()][horarioSeleccionado.getHora()] = null;
+                            
+                            // Se elimina el horario de la lista de horarios
+                            curso.getListaHorarios().remove(indiceHorario);
+                    
+                            //Creación de instancias de tipo Asignación y Horario
+                            Asignacion asignacion = new Asignacion(0, curso);
+                            
+                            Horario horario = new Horario(indiceDia, indiceHora);
+                            
+                            curso.agregarHorario(horario);
+                    
+                            matrizHorario[indiceDia][indiceHora] = asignacion;
+                    
+                            for (int i = 0; i < 5; i++) {
+                                for (int j = 0; j < 14; j++) {
+                                    if (matrizHorario[i][j] == null){
+                                        System.out.print("Vacío" + "\t"); // Utiliza tabulaciones como separadores
+                                    }else{
+                                        System.out.print(matrizHorario[i][j].getCurso().getNombre() + "\t"); // Utiliza tabulaciones como separadores
+                                    }
+                                }
+                                System.out.println(); // Cambia de línea después de cada fila
+                            }
+                    
+                            System.out.println("¡Actualización realizada exitosamente!");     
+            
+                        }else{
+                            System.out.println("Indice inválido.");
+                        }
+    
+                    }else{
+                        System.out.println("Índice inválido.");
+                    }
     
                 }else{
-                    System.out.println("Indice inválido.");
+                    System.out.println("Índice inválido.");
                 }
-
+                
             }else{
                 System.out.println("Índice inválido.");
             }
@@ -580,21 +669,32 @@ public class Salon {
             System.out.println("Ingrese día en el que desea ver al profesor del curso: ");
             mostrasDias();
             int indiceDia = sc.nextInt();
-            
-            System.out.println("Ingrese el horario que desea saber: ");
-            for (int i = 0; i < horarios.length; i++){
-                System.out.println(i + ". " + horarios[i]);
-            }
-            int indiceHora = sc.nextInt();
-    
-            // Validación para mostrar el profesor seleccionado
-            if (matrizHorario[indiceDia][indiceHora] != null){
-                System.out.println("- Profesor asignado a este horario: " + matrizHorario[indiceDia][indiceHora].getCurso().getProfesor().getNombre());
-                System.out.println("- Carné profesor: " + matrizHorario[indiceDia][indiceHora].getCurso().getProfesor().getCarne());
-                System.out.println("- Email profesor: " + matrizHorario[indiceDia][indiceHora].getCurso().getProfesor().getEmail());
+
+            if (indiceDia >= 0 && indiceDia <= 4){
+                System.out.println("Ingrese el horario que desea saber: ");
+                for (int i = 0; i < horarios.length; i++){
+                    System.out.println(i + ". " + horarios[i]);
+                }
+                int indiceHora = sc.nextInt();
+
+                if (indiceHora >= 0 && indiceHora <= 13){
+                    // Validación para mostrar el profesor seleccionado
+                    if (matrizHorario[indiceDia][indiceHora] != null){
+                        System.out.println("- Profesor asignado a este horario: " + matrizHorario[indiceDia][indiceHora].getCurso().getProfesor().getNombre());
+                        System.out.println("- Carné profesor: " + matrizHorario[indiceDia][indiceHora].getCurso().getProfesor().getCarne());
+                        System.out.println("- Email profesor: " + matrizHorario[indiceDia][indiceHora].getCurso().getProfesor().getEmail());
+                    }else{
+                        System.out.println("No hay ningún profesor asignado al horario seleccionado.");
+                    }
+                }else{
+                    System.out.println("Índice inválido.");    
+                }
+        
+
             }else{
-                System.out.println("No hay ningún profesor asignado al horario seleccionado.");
+                System.out.println("Índice inválido.");
             }
+            
         
         } catch (InputMismatchException e) {
             System.out.println("Entrada inválida, debe ingresar un número entero.");
@@ -618,24 +718,38 @@ public class Salon {
             System.out.println();
             System.out.println("Ingrese el profesor que desea saber sus horarios: ");
             mostrarProfesores();
+
+            int sizeProfesores = getProfesores().size();
+            // Se almacena la cantidad de profesores actuales para validar indice
+            ArrayList<Integer> indicesProfesores = new ArrayList<Integer>();
+            for (int i = 0; i < sizeProfesores; i++){
+                indicesProfesores.add(i);
+            }
+
             int indiceProfesor = sc.nextInt();
-    
-            // Se almacenan las clases que da un profesor
-            ArrayList<Curso> clasesProfesor = new ArrayList<Curso>();
-            for (Curso curso : cursos) {
-                if (curso.getProfesor().getCarne().equals(profesores.get(indiceProfesor).getCarne()) )  {
-                    clasesProfesor.add(curso);
-                }  
-            }
-    
-            // Se muestran los horarios que da un profesor
-            System.out.println("Los horarios en los que imparte clases el profesor son: ");
-            for (Curso curso : clasesProfesor) {
-                System.out.println("--------- " + curso.getNombre() + " ---------");
-                for (Horario horario : curso.getListaHorarios()) {
-                    System.out.println(diasSemana[horario.getDia()] + ": " + horarios[horario.getHora()]);
+            
+            if (indicesProfesores.contains(indiceProfesor)){
+                // Se almacenan las clases que da un profesor
+                ArrayList<Curso> clasesProfesor = new ArrayList<Curso>();
+                for (Curso curso : cursos) {
+                    if (curso.getProfesor().getCarne().equals(profesores.get(indiceProfesor).getCarne()) )  {
+                        clasesProfesor.add(curso);
+                    }  
                 }
+        
+                // Se muestran los horarios que da un profesor
+                System.out.println("Los horarios en los que imparte clases el profesor son: ");
+                for (Curso curso : clasesProfesor) {
+                    System.out.println("--------- " + curso.getNombre() + " ---------");
+                    for (Horario horario : curso.getListaHorarios()) {
+                        System.out.println(diasSemana[horario.getDia()] + ": " + horarios[horario.getHora()]);
+                    }
+                }
+
+            }else{
+                System.out.println("Índice inválido.");
             }
+    
             
         } catch (InputMismatchException e) {
             System.out.println("Entrada inválida, debe ingresar un número entero.");
@@ -662,7 +776,7 @@ public class Salon {
                 } 
             }
             System.out.println("Número de veces: " + numeroVeces);
-            System.out.println("Porcenaje responsabilidad: " + (numeroVeces / 70.00)*(100));
+            System.out.println("Porcenaje responsabilidad: " + (numeroVeces / 70.00)*(100) + " %");
             numeroVeces = 0;
         }
         

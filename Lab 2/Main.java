@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -30,6 +31,7 @@ import java.util.Scanner;
  *   10. Salir
  * 
  *  - Validaciones del programa:
+ * 
  *    1. Como método defensivo el sistema cuenta con un sistema de validación de entrada de datos lo cuál verifica que no se puedan ingresar caracteres en los campos
  *   donde se solicita valores enteros.
  * 
@@ -40,6 +42,8 @@ import java.util.Scanner;
  *    4. Si se ingresa una opción que no es válida en el menú se le muestra un mensaje de "Opción invalida"
  * 
  *    5. Se válida que al ingresar el indice de la hora, no se ingrese horas que ya estan ocupadas por otras asignaturas.
+ * 
+ *    6. Se válida que en todo momento se ingresen indices de opciones válidas, de lo contrario se le mostrará al usuario un mensaje de "Indice inválido"
  * 
  *  - Es importante mencionar que todo el sistema se pensó para que el usuario solo tenga que ingresar opciones y no las escriba el mismo para evitar posibles errores de ejecución.
  * 
@@ -109,14 +113,28 @@ public class Main{
                     salon.mostrarProfesores();
                     // Se ingresa el profesor para ese curso
                     int indiceProfesor = sc.nextInt();
-                    Profesor profesor = salon.getProfesores().get(indiceProfesor);
 
-                    System.out.println("Ingrese el número de estudiantes asignados al curso: ");
-                    int estudiantesAsignados = sc.nextInt();
+                    int sizeProfesores = salon.getProfesores().size();
+                    // Se almacena la cantidad de profesores actuales para validar indice
+                    ArrayList<Integer> indicesProfesores = new ArrayList<Integer>();
+                    for (int i = 0; i < sizeProfesores; i++){
+                        indicesProfesores.add(i);
+                    }
 
-                    // Se crea el curso
-                    Curso curso = new Curso(codigo, nombre, estudiantesAsignados, profesor);
-                    salon.agregarCurso(curso);
+                    if (indicesProfesores.contains(indiceProfesor)){
+                        Profesor profesor = salon.getProfesores().get(indiceProfesor);
+    
+                        System.out.println("Ingrese el número de estudiantes asignados al curso: ");
+                        int estudiantesAsignados = sc.nextInt();
+    
+                        // Se crea el curso
+                        Curso curso = new Curso(codigo, nombre, estudiantesAsignados, profesor);
+                        salon.agregarCurso(curso);
+
+                    }else{
+                        System.out.println("Indice inválido");
+                    }
+
 
                 }else if (opcion == 3){ // 3. Opciones de manipulación horario
                     salon.controladorSalon();
